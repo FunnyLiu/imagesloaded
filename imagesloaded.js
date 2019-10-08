@@ -24,6 +24,7 @@
     );
   } else {
     // browser global
+    // 浏览器，挂全局
     window.imagesLoaded = factory(
       window,
       window.EvEmitter

@@ -11,7 +11,7 @@
  */
 
 /* jshint unused: true, undef: true, strict: true */
-
+// 自定义的简易事件通讯器
 ( function( global, factory ) {
   // universal module definition
   /* jshint strict: false */ /* globals define, module, window */
@@ -142,6 +142,7 @@ return EvEmitter;
       require('ev-emitter')
     );
   } else {
+    // 挂载到window上
     // browser global
     window.imagesLoaded = factory(
       window,
@@ -152,7 +153,7 @@ return EvEmitter;
 })( typeof window !== 'undefined' ? window : this,
 
 // --------------------------  factory -------------------------- //
-
+// 工厂方法
 function factory( window, EvEmitter ) {
 
 
@@ -211,7 +212,7 @@ function ImagesLoaded( elem, options, onAlways ) {
     console.error( 'Bad element for imagesLoaded ' + ( queryElem || elem ) );
     return;
   }
-
+  // 无论单个或多个都转为数组
   this.elements = makeArray( queryElem );
   this.options = extend( {}, this.options );
   // shift arguments if no options set
@@ -222,9 +223,10 @@ function ImagesLoaded( elem, options, onAlways ) {
   }
 
   if ( onAlways ) {
+    // 将回调挂载always事件上
     this.on( 'always', onAlways );
   }
-
+  //获取所有图片
   this.getImages();
 
   if ( $ ) {
@@ -239,7 +241,7 @@ function ImagesLoaded( elem, options, onAlways ) {
 ImagesLoaded.prototype = Object.create( EvEmitter.prototype );
 
 ImagesLoaded.prototype.options = {};
-
+// 获取节点所有图片
 ImagesLoaded.prototype.getImages = function() {
   this.images = [];
 
@@ -252,10 +254,12 @@ ImagesLoaded.prototype.getImages = function() {
  */
 ImagesLoaded.prototype.addElementImages = function( elem ) {
   // filter siblings
+  // 如果是img标签，直接将阶段加入自定义加载ing图片列表
   if ( elem.nodeName == 'IMG' ) {
     this.addImage( elem );
   }
   // get background image on element
+  // 处理背景图片的情况
   if ( this.options.background === true ) {
     this.addElementBackgroundImages( elem );
   }
@@ -275,6 +279,7 @@ ImagesLoaded.prototype.addElementImages = function( elem ) {
 
   // get child background images
   if ( typeof this.options.background == 'string' ) {
+    // 兼容子节点，但不会去支持嵌套dom
     var children = elem.querySelectorAll( this.options.background );
     for ( i=0; i < children.length; i++ ) {
       var child = children[i];
@@ -288,7 +293,7 @@ var elementNodeTypes = {
   9: true,
   11: true
 };
-
+// 处理背景图片的情况
 ImagesLoaded.prototype.addElementBackgroundImages = function( elem ) {
   var style = getComputedStyle( elem );
   if ( !style ) {
@@ -301,6 +306,7 @@ ImagesLoaded.prototype.addElementBackgroundImages = function( elem ) {
   while ( matches !== null ) {
     var url = matches && matches[2];
     if ( url ) {
+      // 拿到url
       this.addBackground( url, elem );
     }
     matches = reURL.exec( style.backgroundImage );
@@ -311,11 +317,13 @@ ImagesLoaded.prototype.addElementBackgroundImages = function( elem ) {
  * @param {Image} img
  */
 ImagesLoaded.prototype.addImage = function( img ) {
+  // 自定义了loadingimage列表
   var loadingImage = new LoadingImage( img );
   this.images.push( loadingImage );
 };
 
 ImagesLoaded.prototype.addBackground = function( url, elem ) {
+  // 自定义了背景图加载列表
   var background = new Background( url, elem );
   this.images.push( background );
 };
@@ -373,7 +381,7 @@ ImagesLoaded.prototype.complete = function() {
 };
 
 // --------------------------  -------------------------- //
-
+// 自定义的加载中图片对象
 function LoadingImage( img ) {
   this.img = img;
 }
@@ -439,10 +447,11 @@ LoadingImage.prototype.unbindEvents = function() {
 };
 
 // -------------------------- Background -------------------------- //
-
+// 背景图加载中对象
 function Background( url, element ) {
   this.url = url;
   this.element = element;
+  // 通过new Image来进行js操作。
   this.img = new Image();
 }
 

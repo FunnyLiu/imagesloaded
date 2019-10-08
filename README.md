@@ -6,6 +6,18 @@
 
 Detect when images have been loaded.
 
+# 源码分析
+
+核心源码在imagesloaded.pkgd.js
+
+封装了自定义事件通信EvEmitter，图片的加载中图片对象LoadingImage和加载中背景图对象Background。
+
+根据初始化参数的不同，将节点内容（注意这里是不会去嵌套dom树的）转为LoadingImage或Background。
+
+其中Background则手动getComputedStyle()拿到节点的样式，再去通过new Image来判断是否加载异常。
+
+
+
 ## Install
 
 ### Download
